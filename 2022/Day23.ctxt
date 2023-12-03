@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.target=Day23
+comment1.params=args
+comment1.target=void\ main(java.lang.String[])
+comment2.params=order
+comment2.target=void\ dibs(int)
+comment3.params=order
+comment3.target=void\ move(int)
+numComments=4

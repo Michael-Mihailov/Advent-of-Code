@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.target=Tuple
+comment1.params=
+comment1.target=Tuple()
+comment2.params=value
+comment2.target=Tuple(java.lang.Integer)
+comment3.params=other
+comment3.target=int\ compareTo(java.lang.Object)
+numComments=4

@@ -1,0 +1,5 @@
+#BlueJ class context
+comment0.target=Miner
+comment1.params=oreCost\ clayCost\ obsidianCost1\ obsidianCost2\ geodeCost1\ geodeCost2
+comment1.target=Miner(int,\ int,\ int,\ int,\ int,\ int)
+numComments=2
