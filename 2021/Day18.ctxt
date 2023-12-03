@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=Day18
+comment1.params=args
+comment1.target=void\ main(java.lang.String[])
+comment2.params=equation
+comment2.target=boolean\ explode(java.util.ArrayList)
+comment3.params=equation
+comment3.target=boolean\ split(java.util.ArrayList)
+comment4.params=l1\ l2
+comment4.target=java.util.ArrayList\ appendLists(java.util.ArrayList,\ java.util.ArrayList)
+comment5.params=data
+comment5.target=java.util.ArrayList\ readString(java.lang.String)
+numComments=6

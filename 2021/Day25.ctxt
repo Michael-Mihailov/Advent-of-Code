@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.target=Day25
+comment1.params=args
+comment1.target=void\ main(java.lang.String[])
+comment2.params=a1\ a2
+comment2.target=void\ display(boolean[][],\ boolean[][])
+comment3.params=a
+comment3.target=boolean[][]\ makeCopy(boolean[][])
+numComments=4

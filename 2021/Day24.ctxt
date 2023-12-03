@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.target=Day24
+comment1.params=args
+comment1.target=void\ main(java.lang.String[])
+comment2.params=inputs
+comment2.target=int[]\ increment(int[])
+comment3.params=inputs\ dataList
+comment3.target=int\ check(int[],\ java.util.ArrayList)
+numComments=4
