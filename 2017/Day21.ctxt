@@ -1,0 +1,15 @@
+#BlueJ class context
+comment0.target=Day21
+comment1.params=args
+comment1.target=void\ main(java.lang.String[])
+comment2.params=map\ size\ xPos\ yPos
+comment2.target=java.lang.String\ get(char[][],\ int,\ int,\ int)
+comment3.params=map\ size\ xPos\ yPos\ value
+comment3.target=void\ set(char[][],\ int,\ int,\ int,\ java.lang.String)
+comment4.params=base
+comment4.target=java.lang.String[]\ split(java.lang.String)
+comment5.params=base
+comment5.target=java.lang.String\ flip(java.lang.String)
+comment6.params=base
+comment6.target=java.lang.String\ rotate(java.lang.String)
+numComments=7

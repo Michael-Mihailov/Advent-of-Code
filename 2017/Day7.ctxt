@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.target=Day7
+comment1.params=args
+comment1.target=void\ main(java.lang.String[])
+comment2.params=name\ first
+comment2.target=int\ totalWeight(java.lang.String,\ boolean)
+comment3.params=name
+comment3.target=java.lang.String\ findBase(java.lang.String)
+numComments=4
