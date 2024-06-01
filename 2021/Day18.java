@@ -1,161 +1,197 @@
-
-/**
- * Write a description of class Day18 here.
- *
- * @author (your name)
- * @version (a version number or a date)
- */
-
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
-public class Day18 
-{
-    public static void main (String args[]) throws Exception
+public class Day18
+{    
+    public static void main(String[] args) throws IOException
     {
+        new Day18();
+    }
+    
+    public Day18() throws IOException
+    {
+        int answer = 0;
+        
+        ArrayList<String> lines = new ArrayList<String>();
+        
         File file = new File("input.txt");
-        Scanner scn = new Scanner(file);
- 
-        ArrayList equation = new ArrayList();
-        
-        
-        while (scn.hasNextLine())
+        Scanner scn = new Scanner(file);        
+        while (scn.hasNext())
         {
-            String s = scn.nextLine();
-            ArrayList data = readString(s);
-            
-            /*
-            equation = appendLists(equation, data);
-            
-            boolean simplified = false;
-            while (!simplified)
-            {
-                if (!explode(equation) && !split(equation))
-                    simplified = true;
-            }
-            */
+            lines.add(scn.nextLine());
         }
         
-        
-    }
-    
-    public static boolean explode (ArrayList equation)
-    {
-        boolean answer = false;
-        
-        int numIndex = -1;
-        
-        ArrayList<ArrayList> depthList = new ArrayList(); depthList.add(equation);
-        int depthPos = 0; // 0 or 1
-        while (!answer || depthList.size() == 0)
+        for (int line1 = 0; line1 < lines.size(); line1++)
         {
-            if (depthPos > 1)
+            for (int line2 = 0; line2 < lines.size(); line2++)
             {
-                depthPos = 0;
-                depthList.remove(depthList.size() - 1);
-            }
-            else if (depthList.get(depthList.size() - 1).get(depthPos) instanceof ArrayList)
-            {
-                depthList.add((ArrayList) depthList.get(depthList.size() - 1).get(depthPos));
-            }
-            else
-            {
-                numIndex++;
-            }
-        }
-        
-        
-        return answer;
-    }
-    
-    public static boolean split (ArrayList equation)
-    {
-        boolean answer = false;
+                if (line2 == line1) continue;
                 
-        ArrayList<ArrayList> depthList = new ArrayList(); depthList.add(equation);
-        ArrayList<Integer> depthPos =  new ArrayList(); depthPos.add(0); // 0 or 1
-        
-        while (!answer && depthList.size() > 0)
-        {
-            /*
-            if (depthPos.get(depthPos.size() - 1) <= 1)
-            {
-                System.out.println("Current thing : " + depthList.get(depthList.size() - 1).get(depthPos.get(depthPos.size() - 1)));
-                System.out.println(depthList);
-                System.out.println();
-            }
-            */
-            
-            if (depthPos.get(depthPos.size() - 1) > 1)
-            {
-                depthList.remove(depthList.size() - 1);
-                depthPos.remove(depthPos.size() - 1);
-            }
-            else if (depthList.get(depthList.size() - 1).get(depthPos.get(depthPos.size() - 1)) instanceof ArrayList)
-            {
-                depthList.add((ArrayList) depthList.get(depthList.size() - 1).get(depthPos.get(depthPos.size() - 1)));  
-                depthPos.set(depthPos.size() - 1, depthPos.get(depthPos.size() - 1) + 1);
-                depthPos.add(0);
-            }
-            else
-            {
-                if ((int) depthList.get(depthList.size() - 1).get(depthPos.get(depthPos.size() - 1)) > 9)
-                {
-                    int left = (int) depthList.get(depthList.size() - 1).get(depthPos.get(depthPos.size() - 1)) / 2;
-                    int right = left + ((int) depthList.get(depthList.size() - 1).get(depthPos.get(depthPos.size() - 1)) % 2);
+                Node snailSum = new Node(null);
+                
+                for (int k = 1; k <= 2; k++)
+                {       
+                    String data;
+                    if (k == 1) data = lines.get(line1);
+                    else data = lines.get(line2);
                     
-                    ArrayList insert = new ArrayList(); insert.add(left); insert.add(right);
+                    // parse the line
+                    data = data.substring(1);
                     
-                    depthList.get(depthList.size() - 1).set(depthPos.get(depthPos.size() - 1), insert);
+                    Stack<Node> parseStack = new Stack<Node>();
+                    Node lineSum = new Node(null);
                     
-                    answer = true;
+                    lineSum.rightNode = new Node(lineSum);
+                    lineSum.leftNode = new Node(lineSum);
+                    parseStack.push(lineSum.rightNode);
+                    parseStack.push(lineSum.leftNode);
+                    
+                    for (int i = 0; i < data.length(); i++)
+                    {
+                        char action = data.charAt(i);
+                        
+                        if (action == ',' || action == ']') continue;
+                        
+                        if (action == '[')
+                        {
+                            Node check = parseStack.pop();
+                            check.rightNode = new Node(check);
+                            check.leftNode = new Node(check);
+                            parseStack.push(check.rightNode);
+                            parseStack.push(check.leftNode);
+                        }
+                        else // is a number
+                        {
+                            Node check = parseStack.pop();
+                            check.leafValue = new Integer(action - 48); // char to int conversion
+                        }
+                    }
+                    
+                    // add to the sum
+                    if (k == 1)
+                    {
+                        snailSum = lineSum;
+                        continue; // won't need to simplify if no addition has been done yet
+                    }
+                    else
+                    {
+                        Node tempNode = new Node(null);
+                        snailSum.parentNode = tempNode;
+                        lineSum.parentNode = tempNode;
+                        tempNode.leftNode = snailSum;
+                        tempNode.rightNode =  lineSum;
+                        snailSum = tempNode;
+                    }
+                                
+                    // simplify the sum
+                    boolean simplified = false;
+                    while (simplified == false)
+                    {
+                        simplified = true;
+                        
+                        ArrayList<Node> orderedLeaves;
+                        
+                        // exploding
+                        boolean exploded = true;
+                        while (exploded == true)
+                        {
+                            exploded = false;
+                            orderedLeaves = snailSum.orderedLeaves();
+                            for (int j = 0; j < orderedLeaves.size(); j++)
+                            {
+                                Node parent = orderedLeaves.get(j).parentNode;
+                                if (parent.depth() > 4) System.out.println("ERROR, depth greater than 4");
+                                else if (parent.depth() == 4)
+                                {
+                                    int leftValue = orderedLeaves.get(j).leafValue.intValue();
+                                    int rightValue = orderedLeaves.get(j + 1).leafValue.intValue();
+                                    if (j > 0)
+                                    {
+                                        orderedLeaves.get(j - 1).leafValue = new Integer(orderedLeaves.get(j - 1).leafValue.intValue() + leftValue);
+                                    }
+                                    if (j + 2 < orderedLeaves.size())
+                                    {
+                                        orderedLeaves.get(j + 2).leafValue = new Integer(orderedLeaves.get(j + 2).leafValue.intValue() + rightValue);
+                                    }
+                                    parent.leftNode = null;
+                                    parent.rightNode = null;
+                                    parent.leafValue = new Integer(0);
+                                    
+                                    exploded = true;
+                                    break;
+                                }
+                            }
+                        }
+                        // splitting
+                        orderedLeaves = snailSum.orderedLeaves();
+                        for (int j = 0; j < orderedLeaves.size(); j++)
+                        {
+                            Node leaf = orderedLeaves.get(j);
+                            int tempValue = leaf.leafValue.intValue();
+                            if (tempValue >= 10)
+                            {
+                                leaf.leafValue = null;
+                                leaf.leftNode = new Node(leaf);
+                                leaf.rightNode = new Node(leaf);
+                                leaf.leftNode.leafValue = new Integer(tempValue / 2);
+                                leaf.rightNode.leafValue = new Integer((tempValue / 2) + (tempValue % 2));
+                                
+                                simplified = false;
+                                break;
+                            }
+                        }
+                    }
                 }
                 
-                depthPos.set(depthPos.size() - 1, depthPos.get(depthPos.size() - 1) + 1);
+                int posAnswer = snailSum.sumValue();
+                if (posAnswer > answer) answer = posAnswer;
             }
         }
         
-        return answer;
+        System.out.println(answer);
     }
     
-    public static ArrayList appendLists(ArrayList l1, ArrayList l2)
+    public class Node
     {
-        ArrayList answer = new ArrayList();
+        public Node parentNode;
+        public Node leftNode;
+        public Node rightNode;
         
-        answer.add(l1);
-        answer.add(l2);
+        public Integer leafValue = null;
         
-        return answer;
-    }
-    
-    public static ArrayList readString (String data)
-    {
-        data = data.substring(1, data.length() - 1);
-        ArrayList answer = new ArrayList();
-        
-        ArrayList<ArrayList> depthList = new ArrayList(); depthList.add(answer);
-        
-        while (data.length() > 0)
+        public Node(Node parentNode)
         {
-            char op = data.charAt(0);
-            data = data.substring(1);
-            if (op == ','); // do nothing
-            else if (op == '[')
-            {
-                ArrayList newList = new ArrayList();
-                depthList.get(depthList.size() - 1).add(newList);
-                depthList.add(newList);
-            }
-            else if (op == ']')
-            {
-                depthList.remove(depthList.size() - 1);
-            }
-            else
-            {
-                depthList.get(depthList.size() - 1).add(new Integer("" + op));
-            }
+            this.parentNode = parentNode;
         }
         
-        return answer;
+        public boolean isLeaf()
+        {
+            return leafValue != null;
+        }
+        
+        public int sumValue()
+        {
+            if (leafValue != null) return leafValue.intValue();
+            return (3 * leftNode.sumValue()) + (2 * rightNode.sumValue());
+        }
+        
+        public int depth()
+        {
+            if (parentNode == null) return 0;
+            return 1 + parentNode.depth();
+        }
+        
+        public ArrayList<Node> orderedLeaves()
+        {
+            if (leafValue != null)
+            {
+                ArrayList<Node> res = new ArrayList<Node>();
+                res.add(this);
+                return res;
+            }
+            ArrayList<Node> res = leftNode.orderedLeaves();
+            res.addAll(rightNode.orderedLeaves());
+            return res;
+        }
     }
 }
